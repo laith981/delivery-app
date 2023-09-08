@@ -29,7 +29,7 @@ class FoodItem{
 
 
 }
-
+late List <FoodItem> filteredFoodList;
 List<FoodItem> favoriteItemList=[];
 List <FoodItem> listFood=[
   FoodItem(id: "1", imageUrl: "https://media-cdn.tripadvisor.com/media/photo-s/09/e0/58/4f/nurd-berger.jpg", category: "Burger", name: "Bbeef Burger", price: 4.99),

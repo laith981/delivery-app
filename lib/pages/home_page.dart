@@ -1,5 +1,6 @@
 import 'package:app_delivery/models/category.dart';
 import 'package:app_delivery/models/food_item.dart';
+import 'package:app_delivery/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int? choiceIndex;
-  late List <FoodItem> filteredFoodList;
+  
   
   
   @override
@@ -149,96 +150,99 @@ class _HomePageState extends State<HomePage> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true, 
                   itemCount: filteredFoodList.length,
-                  itemBuilder:(context,index)=>Container(
-                    
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: Colors.grey[200]
-                    ),
-                    child: Padding(
-                      padding:const EdgeInsets.all(10) ,
-                      child: Stack(
-                        alignment: AlignmentDirectional.center,
-                        children: [
-                          Column(
+                  itemBuilder:(context,index)=>InkWell(
+                    onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProductDetailsPage(foodItem: filteredFoodList[index],))),
+                    child: Container(
+                      
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Colors.grey[200]
+                      ),
+                      child: Padding(
+                        padding:const EdgeInsets.all(10) ,
+                        child: Stack(
+                          alignment: AlignmentDirectional.center,
                           children: [
-                            Image(image:NetworkImage( filteredFoodList[index].imageUrl),
-                            fit:BoxFit.fill ,
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height*0.85 ,
+                            Column(
+                            children: [
+                              Image(image:NetworkImage( filteredFoodList[index].imageUrl),
+                              fit:BoxFit.fill ,
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height*0.85 ,
+                              ),
+                              SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
+                              Text(filteredFoodList[index].category,
+                              style: const TextStyle(
+                                color:Colors.black45
+                              ),
+                              ),
+                              SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
+                              Text(filteredFoodList[index].name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                              ),
+                              SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
+                              Text("\$ ${filteredFoodList[index].price}",
+                              style: const TextStyle(
+                                color:Colors.orange
+                              ),
+                              ),
+                            ],
+                                          
                             ),
-                            SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
-                            Text(filteredFoodList[index].category,
-                            style: const TextStyle(
-                              color:Colors.black45
-                            ),
-                            ),
-                            SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
-                            Text(filteredFoodList[index].name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                            ),
-                            SizedBox(height:MediaQuery.of(context).size.height*0.01 ,),
-                            Text("\$ ${filteredFoodList[index].price}",
-                            style: const TextStyle(
-                              color:Colors.orange
-                            ),
-                            ),
-                          ],
-                                        
-                          ),
-                          PositionedDirectional(
-                            end: 0,
-                            top: 0,
-                            child: IconButton(
-                              onPressed: (){
-                                setState(() {
-                                  filteredFoodList[index]=filteredFoodList[index].cobywith(isFavorite: !filteredFoodList[index].isFavorite);
-
-                                  final selectedFoodItem=listFood.firstWhere((element) => element.id==filteredFoodList[index].id);
-                                  final selectedFoodItemIndex=listFood.indexOf(selectedFoodItem);
-                                  listFood[selectedFoodItemIndex]=filteredFoodList[index];
-                                  
-                                  if (filteredFoodList[index].isFavorite ){
-                                    int cont=0;
+                            PositionedDirectional(
+                              end: 0,
+                              top: 0,
+                              child: IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    filteredFoodList[index]=filteredFoodList[index].cobywith(isFavorite: !filteredFoodList[index].isFavorite);
+                  
+                                    final selectedFoodItem=listFood.firstWhere((element) => element.id==filteredFoodList[index].id);
+                                    final selectedFoodItemIndex=listFood.indexOf(selectedFoodItem);
+                                    listFood[selectedFoodItemIndex]=filteredFoodList[index];
                                     
+                                    if (filteredFoodList[index].isFavorite ){
+                                      int cont=0;
                                       
-                                    
-                                      favoriteItemList.forEach((element) {
-                                        if(element.id==filteredFoodList[index].id) {
-                                          cont++;
-                                        }
                                         
-                                        });
-                                        
-                                    
-                                    if(cont==0) {
-                                      favoriteItemList.add(filteredFoodList[index]);
-                                    }
-                                  }
-                                  else {
-                                    for (int i=0;i<favoriteItemList.length;i++) {
-                                      if(favoriteItemList[i].id==filteredFoodList[index].id) {
-                                        favoriteItemList.removeAt(i);
+                                      
+                                        favoriteItemList.forEach((element) {
+                                          if(element.id==filteredFoodList[index].id) {
+                                            cont++;
+                                          }
+                                          
+                                          });
+                                          
+                                      
+                                      if(cont==0) {
+                                        favoriteItemList.add(filteredFoodList[index]);
                                       }
                                     }
-                                  
-
-                                  }
-                                  
-                                });
-                                debugPrint(favoriteItemList.toString());
-                              }, 
-                              icon: Icon(
-                                 filteredFoodList[index].isFavorite== false
-                                ?Icons.favorite_border
-                                :Icons.favorite,
-                                color: Colors.orange,
-                                )
-                              ),
-                          ) 
-                        ]
+                                    else {
+                                      for (int i=0;i<favoriteItemList.length;i++) {
+                                        if(favoriteItemList[i].id==filteredFoodList[index].id) {
+                                          favoriteItemList.removeAt(i);
+                                        }
+                                      }
+                                    
+                  
+                                    }
+                                    
+                                  });
+                                  debugPrint(favoriteItemList.toString());
+                                }, 
+                                icon: Icon(
+                                   filteredFoodList[index].isFavorite== false
+                                  ?Icons.favorite_border
+                                  :Icons.favorite,
+                                  color: Colors.orange,
+                                  )
+                                ),
+                            ) 
+                          ]
+                        ),
                       ),
                     ),
                   )
